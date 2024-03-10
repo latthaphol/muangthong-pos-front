@@ -188,8 +188,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 {/* Route for the PromotionITEM component */}
                 <Route path="/login" element={<Login />} />
-                <Route path="/admin/Lot/ProductLotManage" element={<ProductLotManage person={person} />} />
-                <Route path="/promotion/ItemsetManage" element={<ItemsetManage />} />
+               
               </Routes>
             </div>
           </main>

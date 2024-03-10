@@ -384,7 +384,7 @@ const CashierPageDialog = ({ open, onClose, selectedProducts, totalAmount, remov
         try {
 
 
-            const baseUrl = 'http://localhost:4000/api/v1';
+            const baseUrl = ip;
             const endpoint = '/auth/get_members';
             const url = `${baseUrl}${endpoint}`;
 
