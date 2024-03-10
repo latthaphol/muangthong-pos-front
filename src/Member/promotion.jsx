@@ -335,8 +335,7 @@ function Promotionadd({ person }) {
     setCurrentItems(_currentItems);
 
     // Make the API request to update the status on the server
-    axios
-      .get(`http://localhost:4000/api/v1/promotion/switchactive/${promotion_id}`)
+    axios.get(`${ip}/promotion/switchactive/${promotion_id}`)
       .then((response) => {
         if (response.data.success) {
           // Handle the success response from the server if needed.

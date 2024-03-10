@@ -98,40 +98,35 @@ const CashierPage = ({ person }) => {
 
   const handleGetCategories = async () => {
     try {
-      // Make an asynchronous request to get categories
-      const res = await get(PRODUCT_TYPE);
+        // Make an asynchronous request to get categories
+        const res = await get(PRODUCT_TYPE);
 
-      // Check if the request was successful
-      if (res.success) {
-        // Log the response data in the console
-        console.log('Categories response:', res.result);
-        console.log('Image URLs:', res.result.map(item => item.product_type_image));
+        // Check if the request was successful
+        if (res.success) {
+            // Log the response data in the console
+            console.log('Categories response:', res.result);
+            console.log('Image URLs:', res.result.map(item => item.product_type_image));
 
-        // Modify the received data to include image URLs
-        const modifiedData = res.result.map((item) => ({
-          id: item.product_type_id,
-          type: item.product_type,
-          image: item.product_type_image
-            ? `http://localhost:4000/static/product_type/${encodeURIComponent(item.product_type_image)}`
-            : 'http://localhost:4000/placeholder-for-missing-image.jpg',
-          isActive: item.is_active,
-        }));
+            // Modify the received data to include image URLs
+            const modifiedData = res.result.map((item) => ({
+                id: item.product_type_id,
+                type: item.product_type,
+                image: item.product_type_image
+                    ? getImagePath(`/static/product_type/${encodeURIComponent(item.product_type_image)}`)
+                    : getImagePath('/placeholder-for-missing-image.jpg'),
+                isActive: item.is_active,
+            }));
 
-        console.log('111', modifiedData);
+            console.log('Modified Data:', modifiedData);
 
-
-
-
-
-        // Set the modified data in the state
-        setCategories(modifiedData);
-      }
+            // Set the modified data in the state
+            setCategories(modifiedData);
+        }
     } catch (error) {
-      // Handle errors that may occur during the request
-      console.error('Error fetching categories:', error);
+        // Handle errors that may occur during the request
+        console.error('Error fetching categories:', error);
     }
-  };
-
+};
   const HandleUserDetail = async () => {
     try {
       const storedUserData = JSON.parse(localStorage.getItem(localStorageKeys.loginSession));

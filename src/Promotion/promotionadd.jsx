@@ -79,12 +79,10 @@ function Promotionadd({ person }) {
     navigate("/promotion/promotionitemset");
   };
 
-
-
   useEffect(() => {
     handleGetPromotion();
     startAutoUpdatePromotionStatus();
-  }, []); 
+  }, []);
 
   //page
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -114,8 +112,6 @@ function Promotionadd({ person }) {
     setEditDialogOpen(true);
 
     // แปลงวันที่เริ่มต้นและสิ้นสุดเป็นรูปแบบที่ถูกต้องสำหรับ datetime-local
-   
-
   };
 
   const handleCloseEditDialog = () => {
@@ -309,11 +305,13 @@ function Promotionadd({ person }) {
     const formattedDate = date.toISOString().slice(0, 16);
     return formattedDate;
   };
-  const startDateFormatted = selectedPromotion ? formatDate(selectedPromotion.startDate) : "";
-  const endDateFormatted = selectedPromotion ? formatDate(selectedPromotion.endDate) : "";
-  
- 
-  
+  const startDateFormatted = selectedPromotion
+    ? formatDate(selectedPromotion.startDate)
+    : "";
+  const endDateFormatted = selectedPromotion
+    ? formatDate(selectedPromotion.endDate)
+    : "";
+
   const startAutoUpdatePromotionStatus = () => {
     const interval = 60000;
 
@@ -340,26 +338,26 @@ function Promotionadd({ person }) {
   const handleSwitchChange = (promotion_id) => {
     // Create a copy of promotions to avoid directly mutating the state
     const updatedPromotions = [...promotions];
-  
+
     // Find the index of the promotion to toggle
     const promoIndex = updatedPromotions.findIndex(
       (obj) => obj.id === promotion_id
     );
-  
+
     // Toggle the is_active status based on the current value
     updatedPromotions[promoIndex].is_active =
       updatedPromotions[promoIndex].is_active === 1 ? 0 : 1;
-  
+
     // Update the state with the modified promotions
     setPromotions(updatedPromotions);
-  
+
     // Update the currentItems if needed
     const _currentItems = updatedPromotions.slice(
       indexOfFirstItem,
       indexOfLastItem
     );
     setCurrentItems(_currentItems);
-  
+
     // Make the API request to update the status on the server
     axios
       .get(`${ip}/promotion/switchactive/${promotion_id}`)
@@ -380,7 +378,6 @@ function Promotionadd({ person }) {
         console.error("Error making server request:", error);
       });
   };
-  
 
   return (
     <div>
@@ -495,58 +492,56 @@ function Promotionadd({ person }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-  {(rowsPerPage > 0
-    ? promotions.slice(
-        (currentPage - 1) * rowsPerPage,
-        currentPage * rowsPerPage
-      )
-    : promotions
-  ).map((promotionData, index) => (
-    <TableRow key={promotionData.id}>
-      <TableCell>{indexOfFirstItem + index + 1}</TableCell>
-      <TableCell>{promotionData.promotionName}</TableCell>
-      <TableCell>{promotionData.detail}</TableCell>
-      <TableCell>{promotionData.discount} %</TableCell>
-      <TableCell>
-        {new Date(promotionData.startDate).toLocaleString()}
-      </TableCell>
-      <TableCell>
-        {new Date(promotionData.endDate).toLocaleString()}
-      </TableCell>
-      <TableCell>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={promotionData.is_active === 1}
-              onChange={() =>
-                handleSwitchChange(promotionData.id)
-              }
-            />
-          }
-        />
-      </TableCell>
-      <TableCell>{promotionData.quota}</TableCell>
-      <TableCell>
-        
-        <IconButton
-          onClick={() => handleOpenEditDialog(promotionData)}
-        >
-          <EditIcon />
-        </IconButton>
-      </TableCell>
-      <TableCell>
-        <IconButton
-          onClick={() =>
-            handleDeletePromotion(promotionData.id)
-          }
-        >
-          <DeleteIcon />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-  ))}
-</TableBody>
-
+                  {(rowsPerPage > 0
+                    ? promotions.slice(
+                        (currentPage - 1) * rowsPerPage,
+                        currentPage * rowsPerPage
+                      )
+                    : promotions
+                  ).map((promotionData, index) => (
+                    <TableRow key={promotionData.id}>
+                      <TableCell>{indexOfFirstItem + index + 1}</TableCell>
+                      <TableCell>{promotionData.promotionName}</TableCell>
+                      <TableCell>{promotionData.detail}</TableCell>
+                      <TableCell>{promotionData.discount} %</TableCell>
+                      <TableCell>
+                        {new Date(promotionData.startDate).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(promotionData.endDate).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={promotionData.is_active === 1}
+                              onChange={() =>
+                                handleSwitchChange(promotionData.id)
+                              }
+                            />
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>{promotionData.quota}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() => handleOpenEditDialog(promotionData)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() =>
+                            handleDeletePromotion(promotionData.id)
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
               </Table>
               <TableRow
                 sx={{
