@@ -21,26 +21,23 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
   const [loading, setLoading] = useState(false);
 
   const contentRef = useRef(null);
+
   useEffect(() => {
     const fetchReceiptData = async () => {
       try {
         setError(null);
         setLoading(true);
-  
+
         if (orderId) {
           const apiUrl = `${ip}${getReceiptRefundData.replace(':order_id', orderId)}`;
-  
+
           const response = await axios.post(apiUrl);
-  
+
           if (response.status !== 200) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
+
           const data = response.data;
-          
-          // Process dates here after ensuring data is available
-          const dates = new Set(data.result.map(item => item.order_product_date));
-          setUniqueDates(Array.from(dates));
-  
           setReceiptData(data);
           console.log('Receipt Data:', data);
         }
@@ -51,12 +48,11 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
         setLoading(false);
       }
     };
-  
+
     if (open && orderId) {
       fetchReceiptData();
     }
   }, [open, orderId]);
-  
 
   const handleSaveAsPDF = () => {
     const pdf = new jsPDF();
@@ -97,7 +93,6 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
   };
-  const [uniqueDates, setUniqueDates] = useState([]);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
@@ -150,9 +145,9 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
               <MenuItem value="" disabled>
                 เลือกวันเวลาที่คืน
               </MenuItem>
-              {uniqueDates.map((date, index) => (
-                <MenuItem key={index} value={date}>
-                  {formatDateTime(date)}
+              {receiptData.result.map((item, index) => (
+                <MenuItem key={index} value={item.order_product_date_refund}>
+                  {formatDateTime(item.order_product_date_refund)}
                 </MenuItem>
               ))}
             </Select>
@@ -168,7 +163,7 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
               </TableHead>
               <TableBody>
                 {receiptData.result.map((item, index) => (
-                  item.order_product_date === selectedDate && (
+                  item.order_product_date_refund === selectedDate && (
                     <TableRow key={index}>
                       <TableCell style={{ width: '40%' }}>{item.product_name}</TableCell>
                       <TableCell style={{ width: '10%' }}>{item.quantity}</TableCell>
