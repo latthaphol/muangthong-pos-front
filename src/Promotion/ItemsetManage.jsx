@@ -22,12 +22,12 @@ import {
   MenuItem,
   TextField, // Import TextField for input fields in the dialog
 } from "@mui/material";
-import { message } from 'antd';
-import Swal from 'sweetalert2';
+import { message } from "antd";
+import Swal from "sweetalert2";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { getProductItemSet, ip, } from "../Static/api";
+import { getProductItemSet, ip } from "../Static/api";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 export default function ItemsetManage() {
   const [itemset, setitemset] = useState([]);
@@ -50,7 +50,7 @@ export default function ItemsetManage() {
     setIndexOfFirstItem(newIndexOfFirstItem);
     handleGet(); // เรียกใช้ฟังก์ชันเพื่อดึงข้อมูลใหม่
   };
-  
+
   useEffect(() => {
     handleGet();
   }, []);
@@ -64,8 +64,6 @@ export default function ItemsetManage() {
     setSelectedItemSet(itemsetData);
     setEditDialogOpen(true);
   };
-
-
 
   async function handleGet() {
     try {
@@ -110,33 +108,30 @@ export default function ItemsetManage() {
     setIndexOfFirstItem(newIndexOfFirstItem);
     handleGet(); // เรียกใช้ฟังก์ชันเพื่อดึงข้อมูลใหม่
   };
-  
-  
+
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
   const handleSaveChanges = async () => {
     if (!selectedItemSet) {
-      console.error('No item set selected for editing');
+      console.error("No item set selected for editing");
       return;
     }
 
     // Check if any of the fields are empty
 
-
-
     if (
-      selectedItemSet.itemset_name === '' ||
-      selectedItemSet.itemset_detail === '' ||
-      selectedItemSet.itemset_qty === ''
+      selectedItemSet.itemset_name === "" ||
+      selectedItemSet.itemset_detail === "" ||
+      selectedItemSet.itemset_qty === ""
     ) {
       // Display an Ant Design Alert if any field is empty
-      message.error('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+      message.error("กรุณากรอกข้อมูลให้ครบทุกช่อง");
       return;
     }
 
     // Log details of the item set being edited
-    console.log('Editing item set with details:', {
+    console.log("Editing item set with details:", {
       itemset_name: selectedItemSet.itemset_name,
       itemset_detail: selectedItemSet.itemset_detail,
       itemset_price: selectedItemSet.itemset_price,
@@ -150,9 +145,9 @@ export default function ItemsetManage() {
     console.log(updateEndpoint);
     try {
       const response = await fetch(updateEndpoint, {
-        method: 'PUT', // or 'PATCH' as required by your API
+        method: "PUT", // or 'PATCH' as required by your API
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           // Add Authorization header if needed
         },
         body: JSON.stringify({
@@ -169,18 +164,18 @@ export default function ItemsetManage() {
         throw new Error(`สินค้าไม่เพียงพอ: ${response.statusText}`);
       }
       const updatedItemSet = await response.json();
-      console.log('Successfully updated item set:', updatedItemSet);
+      console.log("Successfully updated item set:", updatedItemSet);
 
       // Close the editing dialog and refresh the list of item sets
       setEditDialogOpen(false);
       handleGet(); // This function should fetch the latest list of item sets from your API to update the UI
       Swal.fire({
-        icon: 'success',
-        title: 'แก้ไขสินค้าสำเร็จ',
-        text: 'ข้อมูลของสินค้าถูกอัปเดตแล้ว',
+        icon: "success",
+        title: "แก้ไขสินค้าสำเร็จ",
+        text: "ข้อมูลของสินค้าถูกอัปเดตแล้ว",
       });
     } catch (error) {
-      console.error('Error updating item set:', error);
+      console.error("Error updating item set:", error);
       // Optionally, display an error message to the user
     }
   };
@@ -277,24 +272,25 @@ export default function ItemsetManage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-  {itemset.slice(indexOfFirstItem, indexOfFirstItem + rowsPerPage).map((itemsetData, index) => (
-    <TableRow key={itemsetData.itemset_id}>
-      <TableCell>{indexOfFirstItem + index + 1}</TableCell>
-      <TableCell>{itemsetData.itemset_name}</TableCell>
-      <TableCell>{itemsetData.itemset_detail}</TableCell>
-      <TableCell>{itemsetData.itemset_price}</TableCell>
-      <TableCell>{itemsetData.itemset_qty}</TableCell>
-      <TableCell>
-        <IconButton
-          onClick={() => handleOpenEditDialog(itemsetData)}
-        >
-          <EditIcon />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-  ))}
-</TableBody>
-
+                  {itemset
+                    .slice(indexOfFirstItem, indexOfFirstItem + rowsPerPage)
+                    .map((itemsetData, index) => (
+                      <TableRow key={itemsetData.itemset_id}>
+                        <TableCell>{indexOfFirstItem + index + 1}</TableCell>
+                        <TableCell>{itemsetData.itemset_name}</TableCell>
+                        <TableCell>{itemsetData.itemset_detail}</TableCell>
+                        <TableCell>{itemsetData.itemset_price}</TableCell>
+                        <TableCell>{itemsetData.itemset_qty}</TableCell>
+                        <TableCell>
+                          <IconButton
+                            onClick={() => handleOpenEditDialog(itemsetData)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
               </Table>
             </Paper>
 
@@ -318,7 +314,6 @@ export default function ItemsetManage() {
                 <MenuItem value={10}>10 แถว</MenuItem>
                 <MenuItem value={20}>20 แถว</MenuItem>
                 <MenuItem value={30}>30 แถว</MenuItem>
-
               </Select>
 
               <Typography variant="caption" sx={{ marginRight: 2 }}>
@@ -335,11 +330,11 @@ export default function ItemsetManage() {
                 rowsPerPageOptions={[10, 20, 30]} // Optionally, provide the available rows per page options
                 rowsPerPage={rowsPerPage} // Pass the rowsPerPage state
               />
-
             </Box>
           </Container>
         </Box>
-      </Box>    {selectedItemSet && (
+      </Box>{" "}
+      {selectedItemSet && (
         <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
           <DialogTitle>แก้ไขชุดสินค้า</DialogTitle>
           <DialogContent>
@@ -349,8 +344,13 @@ export default function ItemsetManage() {
               type="text"
               fullWidth
               variant="outlined"
-              value={selectedItemSet ? selectedItemSet.itemset_name : ''}
-              onChange={(e) => setSelectedItemSet({ ...selectedItemSet, itemset_name: e.target.value })}
+              value={selectedItemSet ? selectedItemSet.itemset_name : ""}
+              onChange={(e) =>
+                setSelectedItemSet({
+                  ...selectedItemSet,
+                  itemset_name: e.target.value,
+                })
+              }
             />
             <TextField
               margin="dense"
@@ -358,8 +358,13 @@ export default function ItemsetManage() {
               type="text"
               fullWidth
               variant="outlined"
-              value={selectedItemSet ? selectedItemSet.itemset_detail : ''}
-              onChange={(e) => setSelectedItemSet({ ...selectedItemSet, itemset_detail: e.target.value })}
+              value={selectedItemSet ? selectedItemSet.itemset_detail : ""}
+              onChange={(e) =>
+                setSelectedItemSet({
+                  ...selectedItemSet,
+                  itemset_detail: e.target.value,
+                })
+              }
             />
             <TextField
               margin="dense"
@@ -367,8 +372,16 @@ export default function ItemsetManage() {
               type="number"
               fullWidth
               variant="outlined"
-              value={selectedItemSet ? selectedItemSet.itemset_price : ''}
-              onChange={(e) => setSelectedItemSet({ ...selectedItemSet, itemset_price: e.target.value })}
+              value={selectedItemSet ? selectedItemSet.itemset_price : ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value >= 0 || value === "") {
+                  setSelectedItemSet({
+                    ...selectedItemSet,
+                    itemset_price: value,
+                  });
+                }
+              }}
             />
             <TextField
               margin="dense"
@@ -376,8 +389,16 @@ export default function ItemsetManage() {
               type="number"
               fullWidth
               variant="outlined"
-              value={selectedItemSet ? selectedItemSet.itemset_qty : ''}
-              onChange={(e) => setSelectedItemSet({ ...selectedItemSet, itemset_qty: e.target.value })}
+              value={selectedItemSet ? selectedItemSet.itemset_qty : ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value >= 0 || value === "") {
+                  setSelectedItemSet({
+                    ...selectedItemSet,
+                    itemset_qty: value,
+                  });
+                }
+              }}
             />
           </DialogContent>
           <DialogActions>
@@ -386,8 +407,6 @@ export default function ItemsetManage() {
           </DialogActions>
         </Dialog>
       )}
-
-
     </div>
   );
 }
