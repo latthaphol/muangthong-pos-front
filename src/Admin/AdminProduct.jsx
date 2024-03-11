@@ -299,39 +299,48 @@ function AdminProduct({ person }) {
 
 
 
-
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteProduct = async (id, itemsetId) => {
     try {
-      const numericId = parseInt(id);
+        const numericId = parseInt(id);
 
-      const response = await post({ product_id: numericId, is_active: 0 }, ACTIVE_PRODUCT);
-      console.log('API Response:', response);
-      console.log('คือไร:', { product_id: numericId, is_active: 0 }, ACTIVE_PRODUCT);
+        const response = await post({ product_id: numericId, is_active: 0 }, ACTIVE_PRODUCT);
+        console.log('API Response:', response);
+        console.log('Payload:', { product_id: numericId, is_active: 0 });
 
-      if (response.success) {
-        // Display success message using SweetAlert
-        Swal.fire({
-          icon: 'success',
-          title: 'ลบสินค้า!',
-          text: 'ลบสินค้าเสร็จสิ้น.',
-        }).then((result) => {
-          // Reload products using handleGetProduct
-          if (result.isConfirmed || result.isDismissed) {
-            handleGetProduct();
-          }
-        });
-      } else {
-        // Handle unsuccessful deletion
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Failed to delete the product. Please try again later.',
-        });
-      }
+        // Logging itemsetId before making deletion request
+        console.log('Item set ID:', itemsetId);
+
+        const responseitemset = await post({ product_id: numericId }, `/itemset/delete/${itemsetId}`);
+        console.log('Response for deleting item set:', responseitemset);
+
+        if (response.success) {
+            // Display success message using SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'ลบสินค้า!',
+                text: 'ลบสินค้าเสร็จสิ้น.',
+            }).then((result) => {
+                // Reload products using handleGetProduct
+                if (result.isConfirmed || result.isDismissed) {
+                    handleGetProduct();
+                }
+            });
+        } else {
+            // Handle unsuccessful deletion
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Failed to delete the product. Please try again later.',
+            });
+        }
     } catch (error) {
-      console.error(error);
+        console.error(error);
     }
-  };
+};
+
+
+
+
 
 
 
@@ -448,7 +457,8 @@ function AdminProduct({ person }) {
           unit: item.unit_id,
           image: getImagePath(item.product_image),
           is_active: item.is_active,
-          product_type_id: item.product_type_id
+          product_type_id: item.product_type_id,
+          itemset_id: item.itemset_id
         }));
         setProducts(modifiedData);
         setFilteredProducts(modifiedData);
@@ -625,25 +635,30 @@ function AdminProduct({ person }) {
                         <TableCell>
                           <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px' }} />
                         </TableCell>
+                        {/* เพิ่มเงื่อนไขการตรวจสอบ itemset_id */}
                         <TableCell>
-                          <Button
-                            variant="contained"
-                            sx={{ backgroundColor: '#009ae1', height: '39px' }}
-                            onClick={() => handleNavigateToLotPage(product.id)}
-                            startIcon={<EditIcon />}
-                          >
-                            จัดการล็อต
-                          </Button>
+                          {product.itemset_id == null && ( // ตรวจสอบว่า itemset_id ไม่เท่ากับ null
+                            <Button
+                              variant="contained"
+                              sx={{ backgroundColor: '#009ae1', height: '39px' }}
+                              onClick={() => handleNavigateToLotPage(product.id)}
+                              startIcon={<EditIcon />}
+                            >
+                              จัดการล็อต
+                            </Button>
+                          )}
                         </TableCell>
+                        {/* ส่วนที่เหลือของตาราง */}
                         <TableCell>
                           <IconButton onClick={() => handleEditProduct(product)}>
                             <EditIcon />
                           </IconButton>
                         </TableCell>
                         <TableCell>
-                          <IconButton onClick={() => handleDeleteProduct(product.id)}>
-                            <DeleteIcon />
-                          </IconButton>
+                        <IconButton onClick={() => handleDeleteProduct(product.id, product.itemset_id)}>
+  <DeleteIcon />
+</IconButton>
+
                         </TableCell>
                       </TableRow>
                     ))}
