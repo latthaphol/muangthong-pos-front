@@ -23,6 +23,7 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import { localStorageKeys } from '../Static/LocalStorage';
+import Swal from 'sweetalert2';
 
 
 
@@ -281,7 +282,12 @@ const CashierPageDialog = ({ open, onClose, selectedProducts, totalAmount, remov
                 });
 
                 onClose();
-                alert('success')
+                Swal.fire({
+                    title: "สำเร็จ !",
+                    text: "ทำรายการเสร็จสิ้น ",
+                    icon: "success"
+                  });
+                  
                 handleGetProduct();
             } else {
                 console.error('Request failed with status:', response.status);
