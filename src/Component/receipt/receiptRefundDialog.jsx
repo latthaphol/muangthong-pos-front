@@ -21,23 +21,26 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
   const [loading, setLoading] = useState(false);
 
   const contentRef = useRef(null);
-
   useEffect(() => {
     const fetchReceiptData = async () => {
       try {
         setError(null);
         setLoading(true);
-
+  
         if (orderId) {
           const apiUrl = `${ip}${getReceiptRefundData.replace(':order_id', orderId)}`;
-
+  
           const response = await axios.post(apiUrl);
-
+  
           if (response.status !== 200) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-
           const data = response.data;
+          
+          // Process dates here after ensuring data is available
+          const dates = new Set(data.result.map(item => item.order_product_date));
+          setUniqueDates(Array.from(dates));
+  
           setReceiptData(data);
           console.log('Receipt Data:', data);
         }
@@ -48,11 +51,12 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
         setLoading(false);
       }
     };
-
+  
     if (open && orderId) {
       fetchReceiptData();
     }
   }, [open, orderId]);
+  
 
   const handleSaveAsPDF = () => {
     const pdf = new jsPDF();
@@ -93,6 +97,7 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
   };
+  const [uniqueDates, setUniqueDates] = useState([]);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
@@ -145,9 +150,9 @@ function ReceiptRefundDialog({ open, handleClose, orderId }) {
               <MenuItem value="" disabled>
                 เลือกวันเวลาที่คืน
               </MenuItem>
-              {receiptData.result.map((item, index) => (
-                <MenuItem key={index} value={item.order_product_date}>
-                  {formatDateTime(item.order_product_date)}
+              {uniqueDates.map((date, index) => (
+                <MenuItem key={index} value={date}>
+                  {formatDateTime(date)}
                 </MenuItem>
               ))}
             </Select>
